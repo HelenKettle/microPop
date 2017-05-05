@@ -1,0 +1,15 @@
+,units,H2,CO2,CH4,H2O,Formate
+Rtype,none,Se,Se,P,P,X
+halfSat,g/l,0.001,0.001,NA,NA,NA
+yield,g/g,NA,0.03,NA,NA,NA
+maxGrowthRate,/d,NA,2.4,NA,NA,NA
+stoichiom,mol,4,1,1,2,NA
+keyResource,none,CO2,,,,
+numPathways,none,2,,,,
+pHcorners,pHunits,5.25,6,7.5,8.25,
+Rtype.2,none,X,P,P,P,Se
+halfSat.2,g/l,NA,NA,NA,NA,0.001
+yield.2,g/g,NA,NA,NA,NA,0.00724
+maxGrowthRate.2,/d,NA,NA,NA,NA,2.4
+stoichiom.2,mol,NA,3,1,2,4
+keyResource.2,none,Formate,,,,

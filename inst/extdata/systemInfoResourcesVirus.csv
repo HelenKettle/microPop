@@ -1,0 +1,5 @@
+,units,Nutrient,Bacteria1,Bacteria2,resistantBacteria1
+startValue,g/l,1,1,1,0
+inflowRate,g/l/d,1,0,0,0
+washOut,/d,0.1,0.1,0.1,0.1
+molarMass,g/mol,180,113,113,113

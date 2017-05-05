@@ -1,0 +1,8 @@
+,units,Saa,Biomass,Sac,Sbu,Spr,Sh2,SIC,Snh3
+Rtype,none,Se,Pb,P,P,P,P,P,P
+halfSat,g/l,0.8576,NA,NA,NA,NA,NA,NA,NA
+yield,g/g,0.2614,NA,NA,NA,NA,NA,NA,NA
+maxGrowthRate,/h,0.614,NA,NA,NA,NA,NA,NA,NA
+stoichiom,mole,1,0.31,0.462,0.1656,0.04278,0.5658,0.6072,1.19
+keyResource,none,Saa,,,,,,,
+pHcorners,pHunits,0,0,10,10,,,,

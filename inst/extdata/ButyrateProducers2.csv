@@ -1,0 +1,10 @@
+,units,NSP,RS,Sugars,Acetate,Butyrate,Lactate,Formate,CO2,H2O
+Rtype,none,S,S,S,Sb,P,P,P,P,P
+halfSat,g/l,0.001,0.001,0.001,0.001,NA,NA,NA,NA,NA
+yield,g/g,0.286,0.333,0.333,NA,NA,NA,NA,NA,NA
+maxGrowthRate,/d,14.4,7.2,24,NA,NA,NA,NA,NA,NA
+stoichiom,mol,6,6,6,4,7,2,6,4,4
+nonBoostFrac,none,0.1,,,,,,,,
+keyResource,none,Hex,,,,,,,,
+numPathways,none,1,,,,,,,,
+pHcorners,pHunits,4.85,5.6,7.1,7.85,,,,,

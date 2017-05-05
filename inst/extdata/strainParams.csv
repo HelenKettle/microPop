@@ -1,0 +1,6 @@
+strainName, paramName, paramVal, paramUnit, resource,path
+Bacteroides.1, maxGrowthRate,15.0,'/d', NSP,1
+Bacteroides.5, maxGrowthRate,40.0,'/d', Protein,2
+Acetogens.2,pHcorners,5.4,5.7,7.5,9
+
+

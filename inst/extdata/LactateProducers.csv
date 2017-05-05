@@ -1,0 +1,9 @@
+,units,NSP,RS,Sugars,Acetate,Lactate,Formate,Ethanol,H2O
+Rtype,none,S,S,S,P,P,P,P,Sw
+halfSat,g/l,0.001,0.001,0.001,NA,NA,NA,NA,NA
+yield,g/g,0.286,0.333,0.333,NA,NA,NA,NA,NA
+maxGrowthRate,/d,7.2,6,24,NA,NA,NA,NA,NA
+stoichiom,mol,6,6,6,10,4,2,1,1
+keyResource,none,NA,,,,,,,
+numPathways,none,1,,,,,,,
+pHcorners,pHunits,4.95,5.7,7.2,7.95,,,,

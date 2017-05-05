@@ -1,0 +1,4 @@
+,units,Bacteria1,Virus1,Bacteria2,Virus2,resistantBacteria1
+startValue,g/l,1,1,1,1,0
+inflowRate,g/l/d,0,0,0,0,0
+washOut,/d,0.1,0.1,0.1,0.1,0.1

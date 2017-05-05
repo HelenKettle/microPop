@@ -1,0 +1,62 @@
+Package: microPop
+Type: Package
+Title: Modelling Microbial Populations
+Version: 1.2
+Date: 2017-04-21
+Authors@R: person("Helen", "Kettle", email = "Helen.Kettle@bioss.ac.uk",role = c("aut", "cre"))
+Description: Modelling interacting microbial populations - example applications include human gut microbiota, rumen microbiota and phytoplankton. Solves a system of ordinary differential equations to simulate microbial growth and resource uptake over time.
+License: GPL-3 | file LICENSE
+Imports:
+    deSolve
+Suggests:
+    R.rsp
+VignetteBuilder: R.rsp
+RoxygenNote: 5.0.1
+LazyData: true
+Collate:
+    'applyTraitTradeOffs.R'
+    'assignNAsToMFGs.R'
+    'assignStrainTraits.R'
+    'checkResInfo.R'
+    'checkSolution.R'
+    'checkStoichiom.R'
+    'combineGrowthLimFuncDefault.R'
+    'combinePathsFuncDefault.R'
+    'createDF.R'
+    'data.R'
+    'derivsDefault.R'
+    'entryRateFuncDefault.R'
+    'extraGrowthLimFuncDefault.R'
+    'getAllResources.R'
+    'getGroupName.R'
+    'getKeyRes.R'
+    'getMolarStoichiom.R'
+    'getMolarYields.R'
+    'getNonBoostFrac.R'
+    'getNumPaths.R'
+    'getPHcorners.R'
+    'getStrainPHcorners.R'
+    'getStrainParamsFromFile.R'
+    'getValues.R'
+    'growthLimFuncDefault.R'
+    'makeInflowFromSoln.R'
+    'makeParamMatrixG.R'
+    'makeParamMatrixS.R'
+    'massBalanceFuncDefault.R'
+    'microPop-internal.R'
+    'microPop-package.R'
+    'microPopModel.R'
+    'pHFuncDefault.R'
+    'pHLimFuncDefault.R'
+    'pHcentreOfMass.R'
+    'plotTraitChange.R'
+    'productionFuncDefault.R'
+    'productionFuncOld.R'
+    'quickPlot.R'
+    'removalRateFuncDefault.R'
+    'uptakeFuncDefault.R'
+    'rateFuncsDefault.R'
+    'replaceListItems.R'
+    'runMicroPopExample.R'
+    'subsetFunc.R'
+    'waterUptakeRatio.R'

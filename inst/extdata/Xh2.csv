@@ -1,0 +1,8 @@
+,units,Sh2,Biomass,Sch4,SIC,Snh3
+Rtype,none,Se,Pb,P,Se,Se
+halfSat,g/l,0.00001168,NA,NA,1E-22,0.0034
+yield,g/g,0.0904,NA,NA,NA,NA
+maxGrowthRate,/h,0.0223,NA,NA,NA,NA
+stoichiom,moles,1,0.0016,0.246,0.254,0.0016
+keyResource,none,Sh2,,,,
+pHcorners,pHunits,0,0,10,10,

@@ -1,0 +1,5 @@
+,"Units","Nutrient","Light"
+"startValue",'g/l',1,0
+"inflowRate",'g/l/d',1,0
+"washOut",'/d',0,0
+"molarMass",'mol',180.16,0

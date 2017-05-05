@@ -1,0 +1,4 @@
+,Units,Bacteroides,NoButyStarchDeg,NoButyFibreDeg,LactateProducers,ButyrateProducers1,ButyrateProducers2,PropionateProducers,ButyrateProducers3,Acetogens,Methanogens
+startValue,g/l,0.036,0.0271,0.0271,0.011,0.041,0.033,0.022,0.023,0.0077,0.00027
+inflowRate,g/l/d,0,0,0,0,0,0,0,0,0,0
+washOut,/d,1,1,1,1,1,1,1,1,1,1

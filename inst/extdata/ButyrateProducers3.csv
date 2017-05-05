@@ -1,0 +1,15 @@
+,units,NSP,RS,Sugars,Acetate,Butyrate,Formate,H2,CO2,Lactate,H2O
+Rtype,none,S,S,S,P,P,P,P,P,X,Sw
+halfSat,g/l,0.001,0.001,0.001,NA,NA,NA,NA,NA,NA,NA
+yield,g/g,0.286,0.333,0.333,NA,NA,NA,NA,NA,NA,NA
+maxGrowthRate,/d,7.2,7.2,24,NA,NA,NA,NA,NA,NA,NA
+stoichiom,mol,10,10,10,2,9,12,10,8,NA,2
+keyResource,none,NA,,,,,,,,,
+numPathways,none,2,,,,,,,,,
+Rtype.2,none,X,X,X,Se,P,X,P,P,Se,P
+halfSat.2,g/l,NA,NA,NA,0.001,NA,NA,NA,NA,0.001,NA
+yield.2,g/g,NA,NA,NA,NA,NA,NA,NA,NA,0.111,NA
+maxGrowthRate.2,/d,NA,NA,NA,NA,NA,NA,NA,NA,4.8,NA
+stoichiom.2,mol,NA,NA,NA,2,3,NA,2,4,4,2
+keyResource.2,none,Lactate,,,,,,,,,
+pHcorners,pHunits,4.85,5.6,7.1,7.85,,,,,,

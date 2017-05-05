@@ -1,0 +1,4 @@
+,units,Phyto1,Phyto2,Phyto3
+startValue,g/l,1,1,1
+inflowRate,g/l/d,0,0,0
+washOut,/d,0.005,0.005,0.005

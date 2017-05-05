@@ -1,0 +1,5 @@
+,units,Ssu,Zndf,Znsc,Zpro,Sh2,Sch4,Sac,Sbu,SIC,Snh3,Gco2,Gh2,Gch4,Spr,Saa
+startValue,g/l,0.12,1,1,1,0.000004,0.01123,1.58,0.44931,6.18,0.1277,0,0,0,0.55,0
+inflowRate,g/l/h,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+washOut,/h,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+molarMass,g/mol,180.16,NA,NA,NA,2,16.04,60.05,88.1,44.01,17.03,44.01,2,16.04,74.08,134
