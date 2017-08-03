@@ -8,7 +8,8 @@
 removalRateFuncDefault(varName, varValue, stateVarValues, time, washOut, parms)
 }
 \arguments{
-\item{varName}{(string) Name of state variable of interest (this is group name or a resource name - NOT a strain name)}
+\item{varName}{(string) Name of state variable of interest (this is group name
+or a resource name - NOT a strain name)}
 
 \item{varValue}{(scalar) value of state variable of interest}
 
@@ -16,7 +17,8 @@ removalRateFuncDefault(varName, varValue, stateVarValues, time, washOut, parms)
 
 \item{time}{(scalar) time}
 
-\item{washOut}{(named vector) of wash out rates (per unit time) of groups and resources (specified in SysInfo files)}
+\item{washOut}{(named vector) of wash out rates (per unit time) of groups
+and resources (specified in SysInfo files)}
 
 \item{parms}{List containing all system parameters}
 }
@@ -25,5 +27,6 @@ removalRateFuncDefault(varName, varValue, stateVarValues, time, washOut, parms)
 }
 \description{
 Return the rate of removal of any state variable from the system
+This is called in the ODE derivs func
 }
 

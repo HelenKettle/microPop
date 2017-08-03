@@ -4,7 +4,8 @@
 #The system starts with the phytoplankton and nutrient mixed evenly through the water column.
 
 #CHOOSE CASE:
-caseNum=readline('Choose case number by entering 1 or 2: ')
+caseNum=readline('Choose case number by entering 1 or 2
+(Case 1 is for just one microbial group, Case 2 is for 3 microbial groups)')
 
 if (caseNum=='1'){
     print('Running phyto example with only one microbial group')
@@ -35,13 +36,15 @@ Kl=c(0.8,0.4,0.2); names(Kl)=c('Phyto1','Phyto2','Phyto3') #half sat for light
 
 myRateFuncs=rateFuncsDefault
 
-myRateFuncs$extraGrowthLimFunc=function(strainName,groupName,pathName,stateVarValues,stateVarNames,time,parms){
+myRateFuncs$extraGrowthLimFunc=function(strainName,groupName,
+                                        pathName,stateVarValues,stateVarNames,time,parms){
     light.level=exp(-kL*z)
     v=light.level/(light.level+Kl[groupName])
     return(min(max(v,0),1))    
 }
 
-myRateFuncs$entryRateFunc=function(varName,varValue,stateVarValues,time,inflowRate,parms){
+myRateFuncs$entryRateFunc=function(varName,varValue,
+                                   stateVarValues,time,inflowRate,parms){
     if (varName=='Nutrient'){
           v=vn*z
       }else{
@@ -91,7 +94,8 @@ ct=1
 for (mat in mats){
     dev.new()
     par(mar=(c(5,5,2,1)))
-    plot(c(0,max(mat)),range(depths),ylim=rev(range(depths)),type='n',xlab='Concentration (g/l)',ylab='Depth (m)',cex.lab=1.5,cex.axis=1.5,main=titles[ct])
+    plot(c(0,max(mat)),range(depths),ylim=rev(range(depths)),type='n',
+         xlab='Concentration (g/l)',ylab='Depth (m)',cex.lab=1.5,cex.axis=1.5,main=titles[ct])
     for (p in 1:length(p.times)){
         lines(mat[sim.times==p.times[p],],depths,col=cols[p],lwd=2)
     }
@@ -105,13 +109,16 @@ if (length(microbeNames)>1){
     mats=list(bac1,bac2,bac3)
     dev.new()
     par(mar=(c(5,5,2,1)))
-    plot(c(0,3.5),range(depths),ylim=rev(range(depths)),type='n',xlab='Concentration (g/l)',ylab='Depth (m)',cex.lab=1.5,cex.axis=1.5,main='b) Phytoplankton (3 groups)')
+    plot(c(0,3.5),range(depths),ylim=rev(range(depths)),type='n',
+         xlab='Concentration (g/l)',ylab='Depth (m)',cex.lab=1.5,cex.axis=1.5,
+         main='b) Phytoplankton (3 groups)')
     for (m in 1:length(mats)){
         for (p in 1:length(p.times)){
             lines(mats[[m]][sim.times==p.times[p],],depths,col=m,lwd=p,lty=7)
         }
     }
-    legend('topright',legend=p.times,col=1,lty=1,lwd=1:length(p.times),title='days from start',bty='n')
+    legend('topright',legend=p.times,col=1,lty=1,lwd=1:length(p.times),
+           title='days from start',bty='n')
 
     #find depth of maxima at end of simulation
     print(paste('depth of group 1 maximum is ',depths[bac1[L,]==max(bac1[L,])],'m'))

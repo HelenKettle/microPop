@@ -2,7 +2,8 @@
 % Please edit documentation in R/checkResInfo.R
 \name{checkResInfo}
 \alias{checkResInfo}
-\title{Checks whether the resource is included in the system information file (e.g. start value, washout rate etc)}
+\title{Checks whether the all the resources needed are included
+in the system information file (e.g. start value, washout rate etc)}
 \usage{
 checkResInfo(resNames, sys.data)
 }
@@ -15,6 +16,8 @@ checkResInfo(resNames, sys.data)
 nothing
 }
 \description{
-Checks whether the resource is included in the system information file (e.g. start value, washout rate etc)
+Checks whether the all the resources needed are included
+in the system information file (e.g. start value, washout rate etc)
 }
+\keyword{export}
 

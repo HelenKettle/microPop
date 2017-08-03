@@ -6,19 +6,23 @@
 #' @export
 
 
-getGroupName=function(xname,microbeNames){
-
-  g=as.numeric(gregexpr(pattern ='\\.',xname))-1 #find where dot is
-  #gsub("^([^\\.]+)\\.?.*$","\\1", xname) (alternative method)
-  if (g<=0){
-    #not a strain name, therefore do not alter xname
-    x=xname
-  }else{
-    gname=substring(xname,1,g)
-    if (gname%in%microbeNames){x=gname}else{x=xname}
-  }
-
-  
-  return(x)
-  
+getGroupName = function(xname, microbeNames) {
+    
+    g = as.numeric(gregexpr(pattern = "\\.", xname)) - 1  #find where dot is
+    # gsub('^([^\\.]+)\\.?.*$','\\1', xname) (alternative method)
+    if (g <= 0) {
+        # not a strain name, therefore do not alter xname
+        x = xname
+    } else {
+        gname = substring(xname, 1, g)
+        if (gname %in% microbeNames) {
+            x = gname
+        } else {
+            x = xname
+        }
+    }
+    
+    
+    return(x)
+    
 }

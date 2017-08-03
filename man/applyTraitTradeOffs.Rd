@@ -2,29 +2,37 @@
 % Please edit documentation in R/applyTraitTradeOffs.R
 \name{applyTraitTradeOffs}
 \alias{applyTraitTradeOffs}
-\title{Internal function to trade off one trait against another (used when assigning randomly generated strain traits)}
+\title{Internal function to trade off one trait against another (used when
+assigning randomly generated strain traits)}
 \usage{
 applyTraitTradeOffs(microbeNames, tradeOffParams, numPaths, numStrains, Pmats,
   resourceNames)
 }
 \arguments{
-\item{microbeNames}{Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens')}
+\item{microbeNames}{Vector of strings which contains the names of
+the microbial groups in the system e.g. c('Bacteroides','Acetogens')}
 
-\item{tradeOffParams}{(vector of two strings) - parameters to trade off against each other}
+\item{tradeOffParams}{(vector of two strings) - parameters to trade
+off against each other}
 
-\item{numPaths}{Named vector. Number of paths for each microbial group}
+\item{numPaths}{Named vector. Number of paths for each microbial
+group}
 
 \item{numStrains}{Scalar. Number of strains per group}
 
-\item{Pmats}{List containing lists and matrices: [[param]][[strainName]][path,rname]}
+\item{Pmats}{List containing lists and matrices:
+[[param]][[strainName]][path,rname]}
 
-\item{resourceNames}{Vector of strings which contains the names of the resources in the system}
+\item{resourceNames}{Vector of strings which contains the names of
+the resources in the system}
 }
 \value{
 new version of Pmats where parameter values are traded off
 }
 \description{
-works by finding the values for each strain for par1 and par2 and then sorting them in opposite orders.
-This means the parameter values don't change number but they are assigned to different strains.
+works by finding the values for each strain for par1 and par2 and
+then sorting them in opposite orders.  This means the parameter
+values don't change number but they are assigned to different
+strains.
 }
 

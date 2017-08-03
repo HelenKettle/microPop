@@ -2,10 +2,10 @@
 % Please edit documentation in R/getValues.R
 \name{getValues}
 \alias{getValues}
-\title{get quantity for all variables in 'Names'
-e.g. get 'startValue' for all resources}
+\title{get system quantity (e.g. startValue, inflowRate, washOut) for all state variables
+(convention is that microbes are before resources)}
 \usage{
-getValues(sysInfoMicrobes, sysInfoRes, Names, quantity, strainNames,
+getValues(sysInfoMicrobes, sysInfoRes, stateVarNames, quantity, strainNames,
   microbeNames, resourceNames, numStrains)
 }
 \arguments{
@@ -13,9 +13,9 @@ getValues(sysInfoMicrobes, sysInfoRes, Names, quantity, strainNames,
 
 \item{sysInfoRes}{sys info dataframe for resources}
 
-\item{Names}{Vector of names of microbial group or resource}
+\item{stateVarNames}{Vector of names of all the state variables}
 
-\item{quantity}{String. Name of quantity to get value for}
+\item{quantity}{String. Name of quantity to get value for e.g. 'startValue'}
 
 \item{strainNames}{Vector of strings of strain names}
 
@@ -23,10 +23,10 @@ getValues(sysInfoMicrobes, sysInfoRes, Names, quantity, strainNames,
 
 \item{resourceNames}{Vector of strings which contains the names of the resources in the system}
 
-\item{numStrains}{Scalar. Number of strains per group}
+\item{numStrains}{Integer. Number of strains per group}
 }
 \description{
-get quantity for all variables in 'Names'
-e.g. get 'startValue' for all resources
+get system quantity (e.g. startValue, inflowRate, washOut) for all state variables
+(convention is that microbes are before resources)
 }
 

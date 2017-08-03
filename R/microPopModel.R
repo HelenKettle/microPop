@@ -2,7 +2,7 @@
 #'
 #' Runs the microbial population model
 #'
-#' @param microbeNames Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens')
+#' @param microbeNames Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens'). A dataframe for each of the same name must also exist in the workspace.
 #' @param times Vector of times at which the solution is required, e.g. seq(0,10,0.1)
 #' @param resourceSysInfo String giving the name of a csv file or a dataframe object, which describes the initial conditions, inflow and outflow (if constant) and molar mass of each resource. See help(resourceSysInfo) for more info.
 #' @param microbeSysInfo String giving the name of a csv file (e.g. 'systemInfoMicrobes.csv') or a dataframe object, which describes the initial conditions, inflow and outflow (if constant) of each microbial group. See help(microbeSysInfo) for more info. 
@@ -29,7 +29,7 @@
 #' @param checkingOptions (List) Default is list(checkMassConv=FALSE, balanceTol=1e-2, reBalanceStoichiom=FALSE, stoiTol=0.1, checkForNegs=TRUE, negTol=-1e-2). 
 #' \itemize{
 #' \item checkMassConv=TRUE checks for mass conservation in the ODE solver with a tolerance of 'balanceTol' (default is FALSE).
-#' \item reBalanceStoichiom will check the mass balance of the stoichiometries on every metabolic path and rebalance if these are not conserving mass within a tolerance of stoiTol (a warning message will be issued).
+#' \item reBalanceStoichiom will check the mass balance of the stoichiometries on every metabolic path and rebalance if these are not conserving mass within a tolerance of stoiTol (a warning message will be issued). Rebalancing will only affect the final solution if the pathway contains only essential resources (Rtype 'Se') and microbial biomass is a product (Rtype 'Pb').  
 #' \item checkForNegs If TRUE the function checkSolution is called and the solution for each variable, x, is checked for negative values that are greater in magnitude than negTol*max(x). If negative values occur then the solution is incorect and either the problem is incorrectly specified or the tolerances in the ODE solver need to be smaller.
 #' }
 #' @param microbeMolarMass Scalar. Mass of 1 mole of microbes - default is 113g/mol (Batstone et al., 2002)
@@ -74,181 +74,207 @@
 
 #' @export
 
-microPopModel=function(
-  microbeNames,
-  times,
-  resourceSysInfo,
-  microbeSysInfo,
-  rateFuncs=rateFuncsDefault,
-  odeFunc=derivsDefault,
-  numStrains=1,
-  oneStrainRandomParams=FALSE,  
-  pHLimit=FALSE,
-  pHVal=NA,
-  plotOptions=list(),
-  odeOptions=list(),
-  strainOptions=list(),
-  checkingOptions=list(),
-  microbeMolarMass=113,
-  bacCutOff=1e-14
-){
-
-  
-  #check Input Args:
-  #need to do some checks on the rateFuncs
-  #need a check so that all substrates have halfsat, yield and max growth rate above zero
-  #----------------
-  #replace items in list specified by user
-  plotOptions.default=list(yLabel='Concentration (g/L)',xLabel='Time',plotFig=TRUE,sumOverStrains=FALSE,saveFig=FALSE,figType='eps',figName='microPopFig')
-
-    odeOptions.default=list('atol'=1e-6,'rtol'=1e-6,'method'='lsoda')
-
-    strainOptions.default=list(randomParams=c('halfSat','yield','maxGrowthRate','pHtrait'),seed=1,distribution='uniform',percentTraitRange=10,maxPHshift=0.2,applyTradeOffs=FALSE,tradeOffParams=NULL,paramsSpecified=FALSE,paramDataName=NULL)
-
-    checkingOptions.default=list(checkMassConv=FALSE,balanceTol=1e-2,reBalanceStoichiom=FALSE,stoiTol=0.1,checkForNegs=TRUE,negTol=-1e-2,checkStoichiomBalance=TRUE)
-  
-  plotOptions=replaceListItems(plotOptions,plotOptions.default)
-  odeOptions=replaceListItems(odeOptions,odeOptions.default)
-  strainOptions=replaceListItems(strainOptions,strainOptions.default)
-  checkingOptions=replaceListItems(checkingOptions,checkingOptions.default)
-
-  if (length(microbeNames)>1){
-    if (anyDuplicated(microbeNames)){stop(paste('ERROR INFO: duplication of',microbeNames[duplicated(microbeNames)],'in microbeNames'))}
-  }
-  
-  set.seed(strainOptions$seed)
-
-  #read in sys info data
-  if (is.character(resourceSysInfo)){sysInfoRes=createDF(resourceSysInfo)}else{sysInfoRes=resourceSysInfo}
-  if (is.character(microbeSysInfo)){sysInfoMicrobes=createDF(microbeSysInfo)}else{sysInfoMicrobes=microbeSysInfo}
-
-    if (any(colnames(sysInfoRes)=='units') | any(colnames(sysInfoRes)=='Units')){
-        molarMass=c(as.numeric(sysInfoRes['molarMass',-1]),microbeMolarMass)
-        names(molarMass)=c(colnames(sysInfoRes[,-1]),'X')
-    }else{
-        molarMass=c(as.numeric(sysInfoRes['molarMass',]),microbeMolarMass)
-        names(molarMass)=c(colnames(sysInfoRes),'X')
-    }
-
-  parameterNames.s=c('halfSat','yield','maxGrowthRate') #microbial group params for each resource (use makeParamMatrix to put these values into a matrix with the same name)
-  halfSat=1; yield=1; maxGrowthRate=1
-
-  for (p in strainOptions$randomParams){
-    if (!p%in%c(parameterNames.s,'pHtrait')){stop('MICROPOP ERROR: Parameter names in strainOptions$randomParams must be one or more of halfSat, yield or maxGrowthRate')}
-  }
-  
-  if (strainOptions$applyTradeOffs){
-    if (length(strainOptions$tradeOffParams)!=2){stop('MICROPOP ERROR: If applyTradeOffs is TRUE, two (and only two) parameters must be specifed for trading off')}
-    for (p in strainOptions$tradeOffParams){
-      if (!p%in%strainOptions$randomParams){stop('MICROPOP ERROR: Trade-off parameters must be included in strainOptions$randomParams')}
-      if (p=='pHtrait'){stop('MICROPOP ERROR: pH trait can not be traded-off')}
-    }}
-  #--------------
-  
-  #assign strain names
-  allStrainNames=NULL
-  for (gname in microbeNames){
-    if (numStrains==1){
-      allStrainNames=c(allStrainNames,gname)
-    }else{
-      allStrainNames=c(allStrainNames,paste(gname,'.',seq(1,numStrains),sep=''))
-    }
-  }
-
-  resourceNames=getAllResources(microbeNames)
-  checkResInfo(resourceNames,sysInfoRes) #check resources are in SysInfo
-  numPaths=getNumPaths(microbeNames)
-  keyRes=getKeyRes(microbeNames,numPaths)
-  
-  parameterNames.g=c('Rtype','stoichiom') #microbial group params for each resource
-  Rtype=1; stoichiom=1
-  sysNames=c('startValue','inflowRate','washOut')
-  startValue=1; inflowRate=1; washOut=1
-  
-  #Force user to put NAs in the group dataframes where they are needed so that random assignment of strain traits is correct.
-  assignNAsToMFGS(microbeNames,numPaths,keyRes,resourceNames)
-  
-  #Make matrices of the parameters in parameterNames
-  for (i in 1:length(parameterNames.s)){
-      assign(parameterNames.s[i],makeParamMatrixS(resourceNames,microbeNames,parameterNames.s[i],numPaths,numStrains,strainOptions,oneStrainRandomParams))
-  }
-
-  for (i in 1:length(parameterNames.g)){
-    assign(parameterNames.g[i],makeParamMatrixG(microbeNames,parameterNames.g[i],numPaths,sysInfoRes,microbeMolarMass,resourceNames))
-  }
-
-  if (numStrains>1 & any(Rtype=='Sm',na.rm=TRUE)){
-      stop('MICROPOP ERROR: can not have multiple strains when there are microbial substrates - sorry!')
-  }
-
-  stateVarNames.g=c(microbeNames,resourceNames)
-  stateVarNames.s=c(allStrainNames,resourceNames)
-  for (i in 1:length(sysNames)){
-    assign(sysNames[i],getValues(sysInfoMicrobes,sysInfoRes,stateVarNames.g,sysNames[i],allStrainNames,microbeNames,resourceNames,numStrains))
-  }
-
-  
-  if (checkingOptions$checkStoichiomBalance){
-    stoichiom=checkStoichiom(stoichiom,Rtype,microbeNames,numPaths,as.numeric(checkingOptions$stoiTol),checkingOptions$reBalanceStoichiom)
-  }
-
-    water.uptake.ratio=waterUptakeRatio(microbeNames,stoichiom,Rtype,numPaths) #ratio of water mass/other uptake mass [gname,path]
-  
-
-#    molStoi=getMolarStoichiom(microbeNames,numPaths,resData,resourceNames)
-#    molYield=getMolarYields(microbeNames,numPaths,resData,resourceNames,molStoi,keyRes,Rtype)
-#    print(molYield)
-#    print(stoichiom)
-
-  #put into lists
-  Pmats=list(halfSat=halfSat,yield=yield,maxGrowthRate=maxGrowthRate,Rtype=Rtype,stoichiom=stoichiom,waterRatio=water.uptake.ratio)#,molYield=molYield)
-  Smats=list(startValue=startValue,inflowRate=inflowRate,washOut=washOut)
-  
-  #once params halfSat, maxGrowthRate, yield have been assigned then can implement trade offs.
-  if (strainOptions$applyTradeOffs & numStrains>1){
-    Pmats=applyTraitTradeOffs(microbeNames,strainOptions$tradeOffParams,numPaths,numStrains,Pmats,resourceNames)}
+microPopModel = function(microbeNames, times, resourceSysInfo, microbeSysInfo, rateFuncs = rateFuncsDefault, 
+    odeFunc = derivsDefault, numStrains = 1, oneStrainRandomParams = FALSE, pHLimit = FALSE, 
+    pHVal = NA, plotOptions = list(), odeOptions = list(), strainOptions = list(), 
+    checkingOptions = list(), microbeMolarMass = 113, bacCutOff = 1e-14) {
     
-  pHcorners=getPHcorners(microbeNames,pHLimit)
-
-  strainPHcorners=getStrainPHcorners(microbeNames,allStrainNames,numStrains,pHcorners,pHLimit,strainOptions)
-
-  nonBoostFrac=getNonBoostFrac(microbeNames,resourceNames,numPaths)
-  #print(nonBoostFrac)
-
-    #now need to read in parameter values from file if required
-    #overwrite param vals with those from file if required
-    if (strainOptions$paramsSpecified){
-        nps=getStrainParamsFromFile(Pmats,strainPHcorners,strainOptions)
-        Pmats=nps[[1]]
-        strainPHcorners=nps[[2]]
+    
+    # check Input Args: need to do some checks on the rateFuncs need a check so that
+    # all substrates have halfsat, yield and max growth rate above zero
+    #----------------
+    # replace items in list specified by user
+    plotOptions.default = list(yLabel = "Concentration (g/L)", xLabel = "Time", plotFig = TRUE, 
+        sumOverStrains = FALSE, saveFig = FALSE, figType = "eps", figName = "microPopFig")
+    
+    odeOptions.default = list(atol = 1e-06, rtol = 1e-06, method = "lsoda")
+    
+    strainOptions.default = list(randomParams = c("halfSat", "yield", "maxGrowthRate", 
+        "pHtrait"), seed = 1, distribution = "uniform", percentTraitRange = 10, maxPHshift = 0.2, 
+        applyTradeOffs = FALSE, tradeOffParams = NULL, paramsSpecified = FALSE, paramDataName = NULL)
+    
+    checkingOptions.default = list(checkMassConv = FALSE, balanceTol = 0.01, reBalanceStoichiom = FALSE, 
+        stoiTol = 0.1, checkForNegs = TRUE, negTol = -0.01, checkStoichiomBalance = TRUE)
+    
+    plotOptions = replaceListItems(plotOptions, plotOptions.default)
+    odeOptions = replaceListItems(odeOptions, odeOptions.default)
+    strainOptions = replaceListItems(strainOptions, strainOptions.default)
+    checkingOptions = replaceListItems(checkingOptions, checkingOptions.default)
+    
+    if (length(microbeNames) > 1) {
+        if (anyDuplicated(microbeNames)) {
+            stop(paste("ERROR INFO: duplication of", microbeNames[duplicated(microbeNames)], 
+                "in microbeNames"))
+        }
     }
-
-        
-  #add in the parameter list that is passed into the ODE solver
-  paramList=append(list(keyRes=keyRes,numPaths=numPaths,allStrainNames=allStrainNames,
-                          resourceNames=resourceNames,microbeNames=microbeNames,numStrains=numStrains,
-                          Pmats=Pmats,Smats=Smats,strainPHcorners=strainPHcorners,nonBoostFrac=nonBoostFrac,
-                          pHLimit=pHLimit,pHVal=pHVal,molarMass=molarMass,bacCutOff=bacCutOff,
-                          balanceTol=checkingOptions$balanceTol,checkMassConv=checkingOptions$checkMassConv),
-                     rateFuncs)
-
-  print('Set up completed, ODE solver called...')
-
-  #run model - atm just using one ODE solver
-  #ptm=proc.time()
-  out=ode(y=startValue,times=times,func=odeFunc,parms=paramList,rtol=odeOptions$rtol,atol=odeOptions$atol,method=odeOptions$method)
-  #print(proc.time()-ptm)
-
-  #checksolution does not contain zeros
-  if (checkingOptions$checkForNegs){
-    checkSolution(stateVarNames.s,out,checkingOptions$negTol)
-  }
-  
-  #plot figs
-  if (plotOptions$plotFig){
-   quickPlot(out,length(resourceNames),numStrains,microbeNames,plotOptions$yLabel,plotOptions$xLabel,plotOptions$sumOverStrains,plotOptions$saveFig,plotOptions$figType,plotOptions$figName)
-  }
-
-  return(list(solution=out,parms=paramList))
+    
+    set.seed(strainOptions$seed)
+    
+    # read in sys info data
+    if (is.character(resourceSysInfo)) {
+        sysInfoRes = createDF(resourceSysInfo)
+    } else {
+        sysInfoRes = resourceSysInfo
+    }
+    if (is.character(microbeSysInfo)) {
+        sysInfoMicrobes = createDF(microbeSysInfo)
+    } else {
+        sysInfoMicrobes = microbeSysInfo
+    }
+    
+    if (any(colnames(sysInfoRes) == "units") | any(colnames(sysInfoRes) == "Units")) {
+        molarMass = c(as.numeric(sysInfoRes["molarMass", -1]), microbeMolarMass)
+        names(molarMass) = c(colnames(sysInfoRes[, -1]), "X")
+    } else {
+        molarMass = c(as.numeric(sysInfoRes["molarMass", ]), microbeMolarMass)
+        names(molarMass) = c(colnames(sysInfoRes), "X")
+    }
+    
+    parameterNames.s = c("halfSat", "yield", "maxGrowthRate")  #microbial group params for each resource (use makeParamMatrix to put these values into a matrix with the same name)
+    halfSat = 1
+    yield = 1
+    maxGrowthRate = 1
+    
+    for (p in strainOptions$randomParams) {
+        if (!p %in% c(parameterNames.s, "pHtrait")) {
+            stop("MICROPOP ERROR: Parameter names in strainOptions$randomParams must be one or more of halfSat, yield or maxGrowthRate")
+        }
+    }
+    
+    if (strainOptions$applyTradeOffs) {
+        if (length(strainOptions$tradeOffParams) != 2) {
+            stop("MICROPOP ERROR: If applyTradeOffs is TRUE, two (and only two) parameters must be specifed for trading off")
+        }
+        for (p in strainOptions$tradeOffParams) {
+            if (!p %in% strainOptions$randomParams) {
+                stop("MICROPOP ERROR: Trade-off parameters must be included in strainOptions$randomParams")
+            }
+            if (p == "pHtrait") {
+                stop("MICROPOP ERROR: pH trait can not be traded-off")
+            }
+        }
+    }
+    #--------------
+    
+    # assign strain names
+    allStrainNames = NULL
+    for (gname in microbeNames) {
+        if (numStrains == 1) {
+            allStrainNames = c(allStrainNames, gname)
+        } else {
+            allStrainNames = c(allStrainNames, paste(gname, ".", seq(1, numStrains), 
+                sep = ""))
+        }
+    }
+    
+    resourceNames = getAllResources(microbeNames)
+    checkResInfo(resourceNames, sysInfoRes)  #check resources are in SysInfo
+    numPaths = getNumPaths(microbeNames)
+    keyRes = getKeyRes(microbeNames, numPaths)
+    
+    parameterNames.g = c("Rtype", "stoichiom")  #microbial group params for each resource
+    Rtype = 1
+    stoichiom = 1
+    sysNames = c("startValue", "inflowRate", "washOut")
+    startValue = 1
+    inflowRate = 1
+    washOut = 1
+    
+    # Force user to put NAs in the group dataframes where they are needed so that
+    # random assignment of strain traits is correct.
+    assignNAsToMFGs(microbeNames, numPaths, keyRes, resourceNames)
+    
+    # Make matrices of the parameters in parameterNames
+    for (i in 1:length(parameterNames.s)) {
+        assign(parameterNames.s[i], makeParamMatrixS(resourceNames, microbeNames, 
+            parameterNames.s[i], numPaths, numStrains, strainOptions, oneStrainRandomParams))
+    }
+    
+    for (i in 1:length(parameterNames.g)) {
+        assign(parameterNames.g[i], makeParamMatrixG(microbeNames, parameterNames.g[i], 
+            numPaths, sysInfoRes, microbeMolarMass, resourceNames))
+    }
+    
+    if (numStrains > 1 & any(Rtype == "Sm", na.rm = TRUE)) {
+        stop("MICROPOP ERROR: can not have multiple strains when there are microbial substrates - sorry!")
+    }
+    
+    stateVarNames.g = c(microbeNames, resourceNames)
+    stateVarNames.s = c(allStrainNames, resourceNames)
+    for (i in 1:length(sysNames)) {
+        assign(sysNames[i], getValues(sysInfoMicrobes, sysInfoRes, stateVarNames.g, 
+            sysNames[i], allStrainNames, microbeNames, resourceNames, numStrains))
+    }
+    
+    
+    if (checkingOptions$checkStoichiomBalance) {
+        stoichiom = checkStoichiom(stoichiom, Rtype, microbeNames, numPaths, as.numeric(checkingOptions$stoiTol), 
+            checkingOptions$reBalanceStoichiom)
+    }
+    
+    water.uptake.ratio = waterUptakeRatio(microbeNames, stoichiom, Rtype, numPaths)  #ratio of water mass/other uptake mass [gname,path]
+    
+    
+    # molStoi=getMolarStoichiom(microbeNames,numPaths,resData,resourceNames)
+    # molYield=getMolarYields(microbeNames,numPaths,resData,resourceNames,molStoi,keyRes,Rtype)
+    # print(molYield) print(stoichiom)
+    
+    # put into lists
+    Pmats = list(halfSat = halfSat, yield = yield, maxGrowthRate = maxGrowthRate, 
+        Rtype = Rtype, stoichiom = stoichiom, waterRatio = water.uptake.ratio)  #,molYield=molYield)
+    Smats = list(startValue = startValue, inflowRate = inflowRate, washOut = washOut)
+    
+    # once params halfSat, maxGrowthRate, yield have been assigned then can implement
+    # trade offs.
+    if (strainOptions$applyTradeOffs & numStrains > 1) {
+        Pmats = applyTraitTradeOffs(microbeNames, strainOptions$tradeOffParams, numPaths, 
+            numStrains, Pmats, resourceNames)
+    }
+    
+    pHcorners = getPHcorners(microbeNames, pHLimit)
+    
+    strainPHcorners = getStrainPHcorners(microbeNames, allStrainNames, numStrains, 
+        pHcorners, pHLimit, strainOptions)
+    
+    nonBoostFrac = getNonBoostFrac(microbeNames, resourceNames, numPaths)
+    # print(nonBoostFrac)
+    
+    # now need to read in parameter values from file if required overwrite param vals
+    # with those from file if required
+    if (strainOptions$paramsSpecified) {
+        nps = getStrainParamsFromFile(Pmats, strainPHcorners, strainOptions)
+        Pmats = nps[[1]]
+        strainPHcorners = nps[[2]]
+    }
+    
+    
+    # add in the parameter list that is passed into the ODE solver
+    paramList = append(list(keyRes = keyRes, numPaths = numPaths, allStrainNames = allStrainNames, 
+        resourceNames = resourceNames, microbeNames = microbeNames, numStrains = numStrains, 
+        Pmats = Pmats, Smats = Smats, strainPHcorners = strainPHcorners, nonBoostFrac = nonBoostFrac, 
+        pHLimit = pHLimit, pHVal = pHVal, molarMass = molarMass, bacCutOff = bacCutOff, 
+        balanceTol = checkingOptions$balanceTol, checkMassConv = checkingOptions$checkMassConv), 
+        rateFuncs)
+    
+    print("Set up completed, ODE solver called...")
+    
+    # run model - atm just using one ODE solver ptm=proc.time()
+    out.ode = ode(y = startValue, times = times, func = odeFunc, parms = paramList, rtol = odeOptions$rtol, 
+        atol = odeOptions$atol, method = odeOptions$method)
+    # print(proc.time()-ptm)
+    
+    # checksolution does not contain zeros
+    if (checkingOptions$checkForNegs) {
+        checkSolution(out.ode, checkingOptions$negTol)
+    }
+    
+    # plot figs
+    if (plotOptions$plotFig) {
+        quickPlot(out.ode, length(resourceNames), numStrains, microbeNames, plotOptions$yLabel, 
+            plotOptions$xLabel, plotOptions$sumOverStrains, plotOptions$saveFig, 
+            plotOptions$figType, plotOptions$figName)
+    }
+    
+    return(list(solution = out.ode, parms = paramList))
 }
 

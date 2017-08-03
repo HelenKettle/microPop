@@ -7,7 +7,7 @@
 #' @param parms List which contains all information required by the ODE solver
 #' @return (scalar) pH at the given time
 #' @export
-pHFuncDefault <- function(time,parms){
-        pH=parms$pHVal
-        return(pH)
+pHFuncDefault <- function(time, parms) {
+    pH = parms$pHVal
+    return(pH)
 }

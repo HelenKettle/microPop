@@ -9,7 +9,7 @@ getKeyRes(microbeNames, numPaths)
 \arguments{
 \item{microbeNames}{Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens')}
 
-\item{numPaths}{Named vector. Number of paths for each microbial group}
+\item{numPaths}{Named vector. Number of paths for each microbial group. Names are microbeNames}
 }
 \value{
 list of vectors where the names are microbeNames

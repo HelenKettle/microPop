@@ -11,7 +11,7 @@ microPopModel(microbeNames, times, resourceSysInfo, microbeSysInfo,
   checkingOptions = list(), microbeMolarMass = 113, bacCutOff = 1e-14)
 }
 \arguments{
-\item{microbeNames}{Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens')}
+\item{microbeNames}{Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens'). A dataframe for each of the same name must also exist in the workspace.}
 
 \item{times}{Vector of times at which the solution is required, e.g. seq(0,10,0.1)}
 
@@ -51,7 +51,7 @@ To turn off plot generation set plotFig=FALSE. If there are multiple strains the
 \item{checkingOptions}{(List) Default is list(checkMassConv=FALSE, balanceTol=1e-2, reBalanceStoichiom=FALSE, stoiTol=0.1, checkForNegs=TRUE, negTol=-1e-2). 
 \itemize{
 \item checkMassConv=TRUE checks for mass conservation in the ODE solver with a tolerance of 'balanceTol' (default is FALSE).
-\item reBalanceStoichiom will check the mass balance of the stoichiometries on every metabolic path and rebalance if these are not conserving mass within a tolerance of stoiTol (a warning message will be issued).
+\item reBalanceStoichiom will check the mass balance of the stoichiometries on every metabolic path and rebalance if these are not conserving mass within a tolerance of stoiTol (a warning message will be issued). Rebalancing will only affect the final solution if the pathway contains only essential resources (Rtype 'Se') and microbial biomass is a product (Rtype 'Pb').  
 \item checkForNegs If TRUE the function checkSolution is called and the solution for each variable, x, is checked for negative values that are greater in magnitude than negTol*max(x). If negative values occur then the solution is incorect and either the problem is incorrectly specified or the tolerances in the ODE solver need to be smaller.
 }}
 

@@ -20,6 +20,6 @@ massBalanceFuncDefault(uptake, production, growthRate, balanceTol, strainName)
 }
 \description{
 Doesn't return anything but prints to screen if mass does not balance after the equations for biological growth have been derived
-Only run if checkMassConv is TRUE
+This is only run if checkMassConv is TRUE
 }
 

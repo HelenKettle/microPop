@@ -15,7 +15,7 @@ growthLimFuncDefault(strainName, groupName, pathName, varName, resourceValues,
 
 \item{pathName}{Name of metabolic path (e.g. path1) that is being looped through in the ODE solver}
 
-\item{varName}{(string) Name of variable of interest}
+\item{varName}{(string) Name of variable (resource) of interest}
 
 \item{resourceValues}{State vector of resources  (with names)}
 

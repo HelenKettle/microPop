@@ -15,11 +15,12 @@ checkStoichiom(stoichiom, Rtype, microbeNames, numPaths, stoiTol,
 
 \item{Rtype}{Resource type}
 
-\item{microbeNames}{Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens')}
+\item{microbeNames}{Vector of strings which contains the names of the
+microbial groups in the system e.g. c('Bacteroides','Acetogens')}
 
 \item{numPaths}{Named vector. Number of paths for each microbial group}
 
-\item{stoiTol}{Scalar. tolerance i.e. if abs(prod-up)>stoiTol then prints warning}
+\item{stoiTol}{Scalar. tolerance i.e. if abs(prod-up)>stoiTol then warnings are given}
 
 \item{reBalanceStoichiom}{Logical to turn off or on rebalancing}
 }

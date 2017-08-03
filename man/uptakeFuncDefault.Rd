@@ -15,7 +15,7 @@ uptakeFuncDefault(strainName, groupName, pathName, varName, keyResName, subst,
 
 \item{pathName}{Name of metabolic path (e.g. path1) that is being looped through in the ODE solver}
 
-\item{varName}{(string). Calculate uptake for this variable}
+\item{varName}{(string). Calculate uptake of this variable}
 
 \item{keyResName}{(string). Name of the key resource on this pathway}
 
@@ -41,6 +41,6 @@ uptakeFuncDefault(strainName, groupName, pathName, varName, keyResName, subst,
 (scalar) uptake of resource per mass unit of biomass (units are resource mass/biomass/time)
 }
 \description{
-Return the value of resource uptake per biomass (i.e. resource quantity per unit time per mass unit of biomass)
+Return the value of resource uptake per biomass (i.e. resource quantity per unit time per mass unit of biomass) for given resource
 }
 

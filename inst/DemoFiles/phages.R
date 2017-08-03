@@ -7,7 +7,8 @@ run=as.numeric(readline('Choose case number by entering number from 1 to 4: '))
 run1='B1 & B2 feed on N'
 run2='B1 & B2 feed on N, V1 attacks B1'
 run3='B1 & B2 feed on N, V1 attacks B1, V2 attacks B2'
-run4='B1 & B2 feed on N, V1 attacks B1, V2 attacks B2, B1 becomes resistant to V1 with mutation rate fB'
+run4='B1 & B2 feed on N, V1 attacks B1, V2 attacks B2,
+B1 becomes resistant to V1 with mutation rate fB'
 
 runtxt=c(run1,run2,run3,run4)
 
@@ -31,7 +32,8 @@ mutation.frac=rep(0,length(allMicrobeNames)); names(mutation.frac)=allMicrobeNam
 
 myRateFuncs=rateFuncsDefault
 
-myRateFuncs$growthLimFunc=function(strainName,groupName,pathName,varName,resourceValues,allSubType,strainHalfSat,stateVarValues){
+myRateFuncs$growthLimFunc=function(strainName,groupName,pathName,
+                                   varName,resourceValues,allSubType,strainHalfSat,stateVarValues){
     #Returns the value of growthLim (must lie in interval [0,1] i.e. unitless) which is used to scale the maximum growth rate
     
     if (resourceValues[varName]<=0){
@@ -49,7 +51,8 @@ myRateFuncs$growthLimFunc=function(strainName,groupName,pathName,varName,resourc
     return(max(v,0))
 }
 
-myRateFuncs$entryRateFunc=function(varName,varValue,stateVarValues,time,inflowRate,parms){
+myRateFuncs$entryRateFunc=function(varName,varValue,
+                                   stateVarValues,time,inflowRate,parms){
 
     gname=getGroupName(varName,parms$microbeNames)
     if (gname%in%parms$microbeNames){
@@ -74,7 +77,8 @@ if (run==3){groupNums=c(1,2,3,4); fB=0}
 if (run==4){groupNums=c(1,2,3,4,5); fB=0.001}
 
 microbeNames=allMicrobeNames[groupNums]
-if (run==4){mutation.frac['Bacteria1']=-0.001; mutation.frac['resistantBacteria1']=0.001}
+if (run==4){mutation.frac['Bacteria1']=-0.001
+    mutation.frac['resistantBacteria1']=0.001}
 
 out=microPopModel(
     microbeNames=microbeNames,
@@ -83,7 +87,8 @@ out=microPopModel(
     microbeSysInfo=systemInfoMicrobesVirus,
     rateFuncs=myRateFuncs,
     checkingOptions=list(checkStoichiomBalance=FALSE),
-    plotOptions=list(yLabel='Number of cells',saveFig=FALSE,figType='eps',figName=paste('Virus',run,sep='')),
+    plotOptions=list(yLabel='Number of cells',saveFig=FALSE,
+                     figType='eps',figName=paste('Virus',run,sep='')),
         odeOptions=list('atol'=1e-8,'rtol'=1e-8)
 )
     

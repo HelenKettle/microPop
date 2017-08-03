@@ -14,13 +14,14 @@
 #'
 #' @export
 
-entryRateFuncDefault=function(varName,varValue,stateVarValues,time,inflowRate,parms){
-
-    gname=getGroupName(varName,parms$microbeNames)
-    if (gname%in%parms$microbeNames){
-        v=inflowRate[gname]/parms$numStrains
-    }else{
-        v=inflowRate[varName]
+entryRateFuncDefault = function(varName, varValue, stateVarValues, time, inflowRate, 
+    parms) {
+    
+    gname = getGroupName(varName, parms$microbeNames)
+    if (gname %in% parms$microbeNames) {
+        v = inflowRate[gname]/parms$numStrains
+    } else {
+        v = inflowRate[varName]
     }
     return(v)
 }

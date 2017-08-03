@@ -19,19 +19,22 @@ khyd=c(0.05,0.20,0.22); names(khyd)=c('Zndf','Znsc','Zpro')#hydrolysis of polyme
 
 myRateFuncs=rateFuncsDefault
 
-myRateFuncs$removalRateFunc=function(varName,varValue,stateVarValues,time,washOut,parms){
+myRateFuncs$removalRateFunc=function(varName,varValue,stateVarValues,
+                                     time,washOut,parms){
     death=0;    hydrolysis=0       
     if (varValue<=0){
         v=0
     }else{
-        if (varName%in%polymer.names){hydrolysis=khyd[varName]}#hydrolysis of polymers
+        if (varName%in%polymer.names){
+            hydrolysis=khyd[varName]}#hydrolysis of polymers
         if (getGroupName(varName,microbeNames)%in%microbeNames){death=kd}#death of microbes
         v=(washOut[varName] + hydrolysis + death)*varValue 
     }
     return(v)
 }
 
-myRateFuncs$entryRateFunc=function(varName,varValue,stateVarValues,time,inflowRate,parms){
+myRateFuncs$entryRateFunc=function(varName,varValue,stateVarValues,
+                                   time,inflowRate,parms){
 
     #entry rate from outside the system----------------------------------------------
     gname=getGroupName(varName,microbeNames)
@@ -90,8 +93,11 @@ for (z in 1:3){
             resourceSysInfo=resourceDF,
             microbeSysInfo=microbeSysInfoRumen,
             odeOptions=list(rtol=1e-10,atol=1e-10),
-            checkingOptions=list(balanceTol=1e-2,reBalanceStoichiom=FALSE,checkMassConv=FALSE,checkStoichiomBalance=FALSE),
-            plotOptions=list(yLabel='concentration (g/l)',xLabel='time (h)',plotFig=FALSE,saveFig=FALSE,figType='eps',figName='Rumen')
+            checkingOptions=list(balanceTol=1e-2,
+                                 reBalanceStoichiom=FALSE,checkMassConv=FALSE,
+                                 checkStoichiomBalance=FALSE),
+            plotOptions=list(yLabel='concentration (g/l)',xLabel='time (h)',
+                             plotFig=FALSE,saveFig=FALSE,figType='eps',figName='Rumen')
         )
         methane[,i,z]=out$solution[,'Sch4']
         X[,i,z]=out$solution[,'Xh2']
@@ -116,11 +122,14 @@ for (z in 1:3){
         
         if (z<3 & i==N){maxy=0.3}else{ maxy=max(mat,na.rm=TRUE)}
         
-        plot(range(time.hours),c(min(mat,na.rm=TRUE),maxy),type='n',xlab='Time (hours)',ylab=paste(v.names[i],'(g/l)'),cex.lab=1.2,cex.axis=1.2,lwd=2,main=paste('Varying',polymer.names[z]),cex.main=1.2)
+        plot(range(time.hours),c(min(mat,na.rm=TRUE),maxy),type='n',
+             xlab='Time (hours)',ylab=paste(v.names[i],'(g/l)'),cex.lab=1.2,
+             cex.axis=1.2,lwd=2,main=paste('Varying',polymer.names[z]),cex.main=1.2)
         for (j in 1:n){
             lines(time.hours,mat[,j,z],col=j,lwd=2)
         }
-        if (i==2){legend('topright',paste(z.in),lty=1,lwd=2,col=1:n,title='initial concentration (g/l)',bty='n',cex=1.0)}
+        if (i==2){legend('topright',paste(z.in),lty=1,lwd=2,col=1:n,
+                         title='initial concentration (g/l)',bty='n',cex=1.0)}
     }
 }
 #dev.copy2eps(file=paste('Rumen.eps',sep=''))

@@ -1,5 +1,5 @@
 #human colon 2
-#note not all NSP is useable therefore must adjust input values so just put in useable amount
+#Note not all NSP is useable therefore must adjust input values so just put in useable amount
 #Look at 3 MFGs: 'Bacteroides','NoButyStarchDeg','Acetogens'
 #Dependence of microbial growth on pH is included and pH changes from 5.5 to 6.5 halfway through the simulation time
 
@@ -16,6 +16,8 @@ out=microPopModel(
     resourceSysInfo=resourceSysInfoHuman,
     microbeSysInfo=microbeSysInfoHuman,
     rateFuncs=myRateFuncs,
-    plotOptions=list(yLabel='concentration (g/l)',xLabel='time (d)',plotFig=TRUE,sumOverStrains=FALSE,saveFig=FALSE,figType='eps',figName='Human2'),
+    plotOptions=list(yLabel='concentration (g/l)',xLabel='time (d)',
+                     plotFig=TRUE,sumOverStrains=FALSE,saveFig=FALSE,
+                     figType='eps',figName='Human2'),
     pHLimit=TRUE
 )

@@ -1,12 +1,12 @@
 #' Uptake Function
 #'
-#' Return the value of resource uptake per biomass (i.e. resource quantity per unit time per mass unit of biomass)
+#' Return the value of resource uptake per biomass (i.e. resource quantity per unit time per mass unit of biomass) for given resource
 #'
 #' @aliases uptakeFunc
 #' @param strainName Name of the strain that is being looped through in the ODE solver
 #' @param groupName Name of microbial group that is being looped through in the ODE solver
 #' @param pathName Name of metabolic path (e.g. path1) that is being looped through in the ODE solver
-#' @param varName (string). Calculate uptake for this variable
+#' @param varName (string). Calculate uptake of this variable
 #' @param keyResName (string). Name of the key resource on this pathway
 #' @param subst Vector of strings giving the names of the substitutable resources  for given strain, pathway
 #' @param ess Vector of strings giving the names of the essential resources  for given strain, pathway
@@ -20,45 +20,56 @@
 #'
 #' @return (scalar) uptake of resource per mass unit of biomass (units are resource mass/biomass/time)
 #' @export
-uptakeFuncDefault=function(strainName,groupName,pathName,varName,keyResName,subst,ess,boost,maxGrowthRate,growthLim,yield,nonBoostFrac,stoichiom,parms){
-        
-    if (length(ess)>0){#multiply growth lims for essential resources
-        ess.lim=prod(growthLim[ess],na.rm=T)
+uptakeFuncDefault = function(strainName, groupName, pathName, varName, keyResName, 
+    subst, ess, boost, maxGrowthRate, growthLim, yield, nonBoostFrac, stoichiom, 
+    parms) {
+    
+    if (length(ess) > 0) {
+        # multiply growth lims for essential resources
+        ess.lim = prod(growthLim[ess], na.rm = TRUE)
     }
-    if (length(boost)>0){#multiply growth lims for essential resources
-        boost.lim=prod(growthLim[boost],na.rm=T)
-        nbf=nonBoostFrac[boost]
+    if (length(boost) > 0) {
+        # multiply growth lims for essential resources
+        boost.lim = prod(growthLim[boost], na.rm = TRUE)
+        nbf = nonBoostFrac[boost]
     }
     
-    if (varName%in%subst){
+    if (varName %in% subst) {
         
-        if (length(ess)==0 & length(boost)==0){
-            v=maxGrowthRate[varName]*growthLim[varName]/yield[varName]
-        }else if (length(ess)>0 & length(boost)==0){#include ess res
-            v=ess.lim*maxGrowthRate[varName]*growthLim[varName]/yield[varName]
-        }else if (length(ess)==0 & length(boost)>0){#include boost res
-            v=(nbf+(1-nbf)*boost.lim)*maxGrowthRate[varName]*growthLim[varName]/yield[varName]
+        if (length(ess) == 0 & length(boost) == 0) {
+            v = maxGrowthRate[varName] * growthLim[varName]/yield[varName]
+        } else if (length(ess) > 0 & length(boost) == 0) {
+            # include ess res
+            v = ess.lim * maxGrowthRate[varName] * growthLim[varName]/yield[varName]
+        } else if (length(ess) == 0 & length(boost) > 0) {
+            # include boost res
+            v = (nbf + (1 - nbf) * boost.lim) * maxGrowthRate[varName] * growthLim[varName]/yield[varName]
         }
         
-    }else if (varName%in%ess){
+    } else if (varName %in% ess) {
         
-        if (length(subst)==0){#all res are ess - use key resource
-            if (varName==keyResName){
-                v=maxGrowthRate[keyResName]*ess.lim/yield[keyResName]
-            }else{
-                v=(stoichiom[varName]/stoichiom[keyResName])*maxGrowthRate[keyResName]*ess.lim/yield[keyResName]}
-        }else{# mix of subst and ess res - do not use key resource
-            subst.uptake=ess.lim*sum(maxGrowthRate[subst]*growthLim[subst]/yield[subst])
-            v=(stoichiom[varName]/mean(stoichiom[subst]))*subst.uptake
+        if (length(subst) == 0) {
+            # all res are ess - use key resource
+            if (varName == keyResName) {
+                v = maxGrowthRate[keyResName] * ess.lim/yield[keyResName]
+            } else {
+                v = (stoichiom[varName]/stoichiom[keyResName]) * maxGrowthRate[keyResName] * 
+                  ess.lim/yield[keyResName]
+            }
+        } else {
+            # mix of subst and ess res - do not use key resource
+            subst.uptake = ess.lim * sum(maxGrowthRate[subst] * growthLim[subst]/yield[subst])
+            v = (stoichiom[varName]/mean(stoichiom[subst])) * subst.uptake
         }
         
-    }else if (varName%in%boost){
-        #compute uptake of substitutable resources due to booster - do not use key resource
-        subst.uptake=(1-nbf)*boost.lim*sum(maxGrowthRate[subst]*growthLim[subst]/yield[subst])
-        v=subst.uptake*stoichiom[boost]/mean(stoichiom[subst])
-     }else{
-        v=0
+    } else if (varName %in% boost) {
+        # compute uptake of substitutable resources due to booster - do not use key
+        # resource
+        subst.uptake = (1 - nbf) * boost.lim * sum(maxGrowthRate[subst] * growthLim[subst]/yield[subst])
+        v = subst.uptake * stoichiom[boost]/mean(stoichiom[subst])
+    } else {
+        v = 0
     }
     
-    return(max(v,0))
+    return(max(v, 0))
 }

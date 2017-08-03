@@ -2,7 +2,8 @@
 % Please edit documentation in R/makeParamMatrixS.R
 \name{makeParamMatrixS}
 \alias{makeParamMatrixS}
-\title{Gets parameter values for parameters halfSat, yield and maxGrowthRate from the MFGs and puts into a matrix
+\title{Gets parameter values for parameters halfSat, yield and maxGrowthRate
+from the MFGs and puts into a matrix
 also assigns strain traits
 since traits are assigned to all strains at once for one param they are
 stored in Mat[strain,res,path], this is then rearranged to make a matrix
@@ -30,10 +31,12 @@ makeParamMatrixS(resNames, microbeNames, parameterName, numPaths, numStrains,
 A list called parameterName which contains matrices for all strains (in all groups) with paths on rows and resources on columns
 }
 \description{
-Gets parameter values for parameters halfSat, yield and maxGrowthRate from the MFGs and puts into a matrix
+Gets parameter values for parameters halfSat, yield and maxGrowthRate
+from the MFGs and puts into a matrix
 also assigns strain traits
 since traits are assigned to all strains at once for one param they are
 stored in Mat[strain,res,path], this is then rearranged to make a matrix
 for each strain (mat[path,res]).
 }
+\keyword{internal}
 

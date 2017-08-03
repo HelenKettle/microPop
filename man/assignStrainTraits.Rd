@@ -4,26 +4,33 @@
 \alias{assignStrainTraits}
 \title{Internal function to assign stochastic strain traits}
 \usage{
-assignStrainTraits(numStrains, groupVal, strainOptions, gname,
+assignStrainTraits(numStrains, groupVal, strainOptions,
   parName = "unspecified param", pHtrait = FALSE)
 }
 \arguments{
-\item{numStrains}{Scalar. Number of strains per group}
+\item{numStrains}{Integer. Number of strains per group}
 
-\item{groupVal}{Scalar. Group parameter value}
+\item{groupVal}{Scalar. Group parameter value i.e. the mean parameter value}
 
-\item{strainOptions}{List containing 'distribution' i.e. the shape of the distribution ('normal' or 'uniform' - if distribution is 'normal' then its std dev is percentRange/200, if distribution is 'uniform' then its range is groupVal +/- percentRange); ; 'maxPHshift' max shift in pH units}
-
-\item{gname}{Name of microbial group}
+\item{strainOptions}{List containing 'distribution' i.e. the shape
+of the distribution ('normal' or 'uniform').
+If it is not for a pH trait and the distribution is
+'normal' then its std dev is groupVal*percentRange/200, if distribution is
+'uniform' then its range is groupVal*(1 +/- percentRange/100).
+For a pH trait, 'maxPHshift' is the max shift in pH units and
+'normal' has std dev = maxPHshift/2, and 'uniform' distribution has
+range groupVal +/- maxPHshift;}
 
 \item{parName}{Name of parameter. This is only used to help with error catching}
 
 \item{pHtrait}{TRUE/FALSE whether or not trait is the pH trait.}
 }
 \value{
-vector of trait values for each strain for one parameter value
+vector of values for each strain for one parameter
 }
 \description{
-Produces a random distribution of trait values where the mean is 1 and the range is determined by percentRange e.g. 10% gives values between 0.9 and 1.1
+Produces a random distribution of trait values where the mean is groupVal
+and the range is determined by percentRange (if not pHtrait)
+and by maxPHshift if it is the pHtrait (see strainOptions)
 }
 

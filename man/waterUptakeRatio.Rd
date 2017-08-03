@@ -2,23 +2,27 @@
 % Please edit documentation in R/waterUptakeRatio.R
 \name{waterUptakeRatio}
 \alias{waterUptakeRatio}
-\title{Computes the mass ratio of water uptake to substrate uptake}
+\title{Computes the mass ratio of water uptake to substrate uptake
+(i.e. mass uptake of water divided by total mass uptake)}
 \usage{
 waterUptakeRatio(microbeNames, stoichiom, Rtype, numPaths)
 }
 \arguments{
-\item{microbeNames}{Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens')}
+\item{microbeNames}{Vector of strings which contains the
+names of the microbial groups in the system e.g. c('Bacteroides','Acetogens')}
 
-\item{stoichiom}{Array: stoichiom[gname,R,path]}
+\item{stoichiom}{Array: stoichiom[gname,resName,pathName]}
 
-\item{Rtype}{Resource type array: Rtype[gname,R,path]}
+\item{Rtype}{Resource type array: Rtype[gname,resName,pathName]}
 
 \item{numPaths}{Named vector. Number of paths for each microbial group}
 }
 \value{
-water mass ratio matrix [gname,path.name] with names.
+water mass ratio matrix [gname,pathName] with names.
 }
 \description{
 Computes the mass ratio of water uptake to substrate uptake
+(i.e. mass uptake of water divided by total mass uptake)
 }
+\keyword{internal}
 

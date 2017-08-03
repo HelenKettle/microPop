@@ -19,42 +19,54 @@
 #' @return (scalar) specific growth rate in units of inverse time 
 #'
 #' @export
-combineGrowthLimFuncDefault=function(strainName,groupName,pathName,subst,ess,boost,bio.sub,maxGrowthRate,growthLim,keyResName,nonBoostFrac){
- 
-    if (length(subst)>0){#sum growth limitations for substitutable resources
-        subst.growth=sum(maxGrowthRate[subst]*growthLim[subst])
+combineGrowthLimFuncDefault = function(strainName, groupName, pathName, subst, ess, 
+    boost, bio.sub, maxGrowthRate, growthLim, keyResName, nonBoostFrac) {
+    
+    if (length(subst) > 0) {
+        # sum growth limitations for substitutable resources
+        subst.growth = sum(maxGrowthRate[subst] * growthLim[subst])
     }
     
-    if (length(ess)>0){#multiply growth lims for essential resources
-        ess.lim=prod(growthLim[ess],na.rm=T)
+    if (length(ess) > 0) {
+        # multiply growth lims for essential resources
+        ess.lim = prod(growthLim[ess], na.rm = TRUE)
     }
     
-    if (length(boost)>0){#multiply growth lims for essential resources
-        boost.lim=prod(growthLim[boost],na.rm=T)
+    if (length(boost) > 0) {
+        # multiply growth lims for essential resources
+        boost.lim = prod(growthLim[boost], na.rm = TRUE)
     }
     
-    if (length(ess)>0 & length(subst)==0 & length(boost)==0){#all res are essential res
-        v=maxGrowthRate[keyResName]*ess.lim
+    if (length(ess) > 0 & length(subst) == 0 & length(boost) == 0) {
+        # all res are essential res
+        v = maxGrowthRate[keyResName] * ess.lim
     }
     
-    if (length(subst)>0 & length(ess)==0 & length(boost)==0){ #all res are subst res
-        v=subst.growth
+    if (length(subst) > 0 & length(ess) == 0 & length(boost) == 0) {
+        # all res are subst res
+        v = subst.growth
     }
     
-    if (length(subst)>0 & length(ess)>0 & length(boost)==0){#res are a mix of subst and ess
-        v=subst.growth*ess.lim
+    if (length(subst) > 0 & length(ess) > 0 & length(boost) == 0) {
+        # res are a mix of subst and ess
+        v = subst.growth * ess.lim
     }
     
-    if (length(subst)>0 & length(boost)>0 & length(ess)==0){#res are a mix of subst and boost
-        v=subst.growth*(nonBoostFrac[boost]+(1-nonBoostFrac[boost])*boost.lim)
+    if (length(subst) > 0 & length(boost) > 0 & length(ess) == 0) {
+        # res are a mix of subst and boost
+        v = subst.growth * (nonBoostFrac[boost] + (1 - nonBoostFrac[boost]) * boost.lim)
     }
-
-    if (length(subst)==0 & length(boost)>0 & length(ess)>0){#res are a mix of ess and boost
-        v=maxGrowthRate[keyResName]*ess.lim*(nonBoostFrac[boost]+(1-nonBoostFrac[boost])*boost.lim)
+    
+    if (length(subst) == 0 & length(boost) > 0 & length(ess) > 0) {
+        # res are a mix of ess and boost
+        v = maxGrowthRate[keyResName] * ess.lim * (nonBoostFrac[boost] + (1 - nonBoostFrac[boost]) * 
+            boost.lim)
     }
     
     
-    if (!exists('v')){stop('MICROPOP ERROR: An unaccounted for combination of resource types in combineGrowthLimFunc')}
+    if (!exists("v")) {
+        stop("MICROPOP ERROR: An unaccounted for combination of resource types in combineGrowthLimFunc")
+    }
     
     return(v)
     

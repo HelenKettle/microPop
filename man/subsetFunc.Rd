@@ -4,16 +4,20 @@
 \alias{subsetFunc}
 \title{this function is needed due to R dropping the names when it subsets}
 \usage{
-subsetFunc(array, gname, path)
+subsetFunc(array.in, gname, path)
 }
 \arguments{
-\item{array}{Original array}
+\item{array.in}{Original array}
 
 \item{gname}{Group name (string)}
 
 \item{path}{Path name (string)}
 }
+\value{
+named vector or array
+}
 \description{
 this function is needed due to R dropping the names when it subsets
 }
+\keyword{internal}
 

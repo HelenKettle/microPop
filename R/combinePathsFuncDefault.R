@@ -12,13 +12,14 @@
 #'
 #' @return vector specifying the fraction of the total microbial growth on each pathway
 #' @export
-combinePathsFuncDefault=function(strainName,groupName,growthRate,num.paths,pathNames){
-
-        if (sum(growthRate)>0){
-            path.frac=growthRate/sum(growthRate)
-        }else{
-            path.frac=rep(1,num.paths)}
-        names(path.frac)=pathNames
-        return(path.frac)
-}
+combinePathsFuncDefault = function(strainName, groupName, growthRate, num.paths, 
+    pathNames) {
     
+    if (sum(growthRate) > 0) {
+        path.frac = growthRate/sum(growthRate)
+    } else {
+        path.frac = rep(1, num.paths)
+    }
+    names(path.frac) = pathNames
+    return(path.frac)
+}

@@ -1,5 +1,5 @@
 #human colon 4
-#note not all NSP is useable therefore must adjust input values so just put in useable amount
+#Note not all NSP is useable therefore must adjust input values so just put in useable amount
 #Look at 3 MFGs: 'Bacteroides','NoButyStarchDeg','Acetogens'
 #Add in multiple strains
 #pH change halfway through simulation as in human2.R
@@ -19,7 +19,9 @@ out=microPopModel(
     microbeSysInfo=microbeSysInfoHuman,
     numStrains=5,
     rateFuncs=myRateFuncs,
-    plotOptions=list(yLabel='concentration (g/l)',xLabel='time (d)',plotFig=TRUE,sumOverStrains=FALSE,saveFig=FALSE,figType='eps',figName='Human4'),
+    plotOptions=list(yLabel='concentration (g/l)',xLabel='time (d)',
+                     plotFig=TRUE,sumOverStrains=FALSE,
+                     saveFig=FALSE,figType='eps',figName='Human4'),
     pHLimit=TRUE,
     strainOptions=list(randomParams=c('halfSat','yield','maxGrowthRate','pHtrait'),seed=1,
                        distribution='uniform',percentTraitRange=5,maxPHshift=0.05,
@@ -27,6 +29,8 @@ out=microPopModel(
                        paramsSpecified=TRUE,paramDataName=strainParams)
 ) 
 
-avpHtrait=plotTraitChange(out,'pHtrait',c('Bacteroides','NoButyStarchDeg','Acetogens'),resource.name=NULL,path=NULL,xlabel='Time (days)',saveFig=FALSE,figType='eps',figName='Human4Traits')
+avpHtrait=plotTraitChange(out,'pHtrait',c('Bacteroides','NoButyStarchDeg','Acetogens'),
+                          resource.name=NULL,path=NULL,xlabel='Time (days)',
+                          saveFig=FALSE,figType='eps',figName='Human4Traits')
 
 

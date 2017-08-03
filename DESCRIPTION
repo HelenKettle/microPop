@@ -1,15 +1,19 @@
 Package: microPop
 Type: Package
 Title: Modelling Microbial Populations
-Version: 1.2
-Date: 2017-04-21
+Version: 1.3
+Date: 2017-08-03
 Authors@R: person("Helen", "Kettle", email = "Helen.Kettle@bioss.ac.uk",role = c("aut", "cre"))
-Description: Modelling interacting microbial populations - example applications include human gut microbiota, rumen microbiota and phytoplankton. Solves a system of ordinary differential equations to simulate microbial growth and resource uptake over time.
+Description: Modelling interacting microbial populations - example applications
+    include human gut microbiota, rumen microbiota and phytoplankton. Solves a
+    system of ordinary differential equations to simulate microbial growth and
+    resource uptake over time.
 License: GPL-3 | file LICENSE
 Imports:
     deSolve
 Suggests:
-    R.rsp
+    R.rsp,
+    testthat
 VignetteBuilder: R.rsp
 RoxygenNote: 5.0.1
 LazyData: true
@@ -51,7 +55,6 @@ Collate:
     'pHcentreOfMass.R'
     'plotTraitChange.R'
     'productionFuncDefault.R'
-    'productionFuncOld.R'
     'quickPlot.R'
     'removalRateFuncDefault.R'
     'uptakeFuncDefault.R'

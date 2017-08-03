@@ -1,5 +1,5 @@
 #human colon 3
-#note not all NSP is useable therefore must adjust input values so just put in useable amount
+#Note not all NSP is useable therefore must adjust input values so just put in useable amount
 #Look at 3 MFGs: 'Bacteroides','NoButyStarchDeg','Acetogens'
 #Simulate growth in two compartments where the contents of the first flow into the second
 #Dependence of microbial growth on pH is included
@@ -16,7 +16,9 @@ myRateFuncs$pHFunc=function(time,parms){
     return(pH)
 }
 
-myRateFuncs$entryRateFunc=function(varName,varValue,stateVarValues,time,inflowRate,parms){
+myRateFuncs$entryRateFunc=function(varName,varValue,stateVarValues,
+                                   time,inflowRate,parms){
+    
   #output is the resource (or microbial strain mass) per unit time
     if (compartment==1){
         gname=getGroupName(varName,microbeNames)
@@ -27,7 +29,9 @@ myRateFuncs$entryRateFunc=function(varName,varValue,stateVarValues,time,inflowRa
         }
     }else if (compartment==2){
    #now the entry rate is the output from the previous compartment at the given time step
-        v=approx(inflow.mat[,'time'],inflow.mat[,varName],time,yleft=inflow.mat[1,varName],yright=inflow.mat[length(inflow.mat[,1]),varName])$y
+        v=approx(inflow.mat[,'time'],inflow.mat[,varName],time,
+                 yleft=inflow.mat[1,varName],
+                 yright=inflow.mat[length(inflow.mat[,1]),varName])$y
     }
     return(v)
 }
@@ -46,7 +50,10 @@ for (compartment in 1:num.compartments){
         microbeSysInfo=microbeSysInfoHuman,
         numStrains=1,
         rateFuncs=myRateFuncs,
-        plotOptions=list(yLabel='concentration (g/l)',xLabel='time (d)',plotFig=TRUE,sumOverStrains=FALSE,saveFig=FALSE,figType='eps',figName=paste('Human3comp',compartment,sep='')),
+        plotOptions=list(yLabel='concentration (g/l)',xLabel='time (d)',
+                         plotFig=TRUE,sumOverStrains=FALSE,
+                         saveFig=FALSE,figType='eps',
+                         figName=paste('Human3comp',compartment,sep='')),
         pHLimit=TRUE
     )
     #save the output from the first compartment (otherwise it is over written)

@@ -16,7 +16,7 @@ productionFuncDefault(strainName, groupName, pathName, varName, all.substrates,
 
 \item{pathName}{Name of metabolic path (e.g. path1) that is being looped through in the ODE solver}
 
-\item{varName}{(string). Calculate production for this variable}
+\item{varName}{(string). Calculate production of this variable}
 
 \item{all.substrates}{Vector of strings giving the names of the all the substrates used on this pathway}
 
@@ -39,7 +39,7 @@ productionFuncDefault(strainName, groupName, pathName, varName, all.substrates,
 \item{water}{Name of resource with Rtype 'Sw' - i.e resource could be called 'water' or 'H2O' etc}
 }
 \value{
-(scalar) production rate of resource (units are resource mass/time)
+(scalar) production rate of given resource (units are resource mass/time)
 }
 \description{
 Production rate of resource (units are resource mass/time)

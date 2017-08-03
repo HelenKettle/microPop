@@ -2,7 +2,8 @@
 % Please edit documentation in R/makeParamMatrixG.R
 \name{makeParamMatrixG}
 \alias{makeParamMatrixG}
-\title{generic function which assigns values to an array called parameterName
+\title{generic function which assigns values for Rtype or stoichiom
+to an array of the same name
 array has form [group,resource,path]
 reads in data from MFG dataframes}
 \usage{
@@ -12,7 +13,7 @@ makeParamMatrixG(microbeNames, parameterName, numPaths, resData,
 \arguments{
 \item{microbeNames}{Vector of strings which contains the names of the microbial groups in the system e.g. c('Bacteroides','Acetogens')}
 
-\item{parameterName}{Name of parameter}
+\item{parameterName}{Name of parameter  (Rtype and stoichiom)}
 
 \item{numPaths}{Named vector. Number of paths for each microbial group}
 
@@ -23,11 +24,13 @@ makeParamMatrixG(microbeNames, parameterName, numPaths, resData,
 \item{resNames}{Vector of strings which contains the names of the resources in the system}
 }
 \value{
-Array for parameterName [gname,rname,pname]
+array of form: parameterName [gname,rname,pname]
 }
 \description{
-generic function which assigns values to an array called parameterName
+generic function which assigns values for Rtype or stoichiom
+to an array of the same name
 array has form [group,resource,path]
 reads in data from MFG dataframes
 }
+\keyword{internal}
 
